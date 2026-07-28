@@ -1,1 +1,158 @@
 @import "tailwindcss";
+
+/* Custom Keyframe Animations */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1.5deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-1.5deg);
+  }
+}
+
+@keyframes drift-orb-1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(30px, -20px) scale(1.1);
+    opacity: 0.4;
+  }
+}
+
+@keyframes drift-orb-2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1.1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-20px, 30px) scale(0.95);
+    opacity: 0.35;
+  }
+}
+
+@keyframes drift-orb-3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(0.9);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(15px, 15px) scale(1.05);
+    opacity: 0.25;
+  }
+}
+
+@keyframes draw-trendline {
+  0% {
+    stroke-dashoffset: 1200;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulse-emerald {
+  0%, 100% {
+    text-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
+    opacity: 0.85;
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+    opacity: 1;
+  }
+}
+
+/* Animation Classes */
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 8s ease-in-out infinite;
+}
+
+.animate-drift-orb-1 {
+  animation: drift-orb-1 12s ease-in-out infinite;
+}
+
+.animate-drift-orb-2 {
+  animation: drift-orb-2 15s ease-in-out infinite;
+}
+
+.animate-drift-orb-3 {
+  animation: drift-orb-3 10s ease-in-out infinite;
+}
+
+.animate-draw-line {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: draw-trendline 4.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-pulse-emerald {
+  animation: pulse-emerald 2.5s ease-in-out infinite;
+}
+
+/* Glassmorphism Card Style */
+.login-card-glass {
+  background: rgba(30, 41, 59, 0.7) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Input Fields Glass Style */
+.input-glass {
+  background: rgba(15, 23, 42, 0.55) !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.input-glass::placeholder {
+  color: #94A3B8 !important;
+}
+
+.input-glass:focus {
+  outline: none !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35), inset 0 0 6px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Password field with different accent color on focus */
+.input-glass-indigo:focus {
+  outline: none !important;
+  border-color: #6366F1 !important;
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.35), inset 0 0 6px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Primary CTA Emerald Button */
+.btn-emerald-gradient {
+  background: linear-gradient(135deg, #10B981, #059669) !important;
+  color: #F8FAFC !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.025em !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-emerald-gradient:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5) !important;
+  transform: translateY(-1px);
+}
+
+.btn-emerald-gradient:active {
+  transform: translateY(1px);
+}

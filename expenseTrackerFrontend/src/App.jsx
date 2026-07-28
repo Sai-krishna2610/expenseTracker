@@ -2,7 +2,7 @@
 import './App.css'
 // import { useEffect } from 'react'
 // import axios from 'axios';
-import { Route,Routes } from 'react-router-dom';
+import { Route,Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
@@ -25,11 +25,13 @@ function App() {
   //     .catch(err => console.log(err))
   // }, [])
 
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   return (
     <>
       <Navbar/>
-      <div className='p-4'>
+      <div className={isAuthPage ? '' : 'p-4'}>
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/register' element={<Register/>}/>

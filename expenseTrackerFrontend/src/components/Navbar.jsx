@@ -13,11 +13,13 @@ function Navbar()
         navigate('/login');
     };
 
+    const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
     return(
-        <nav className="bg-blue-600 text-white px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center">
+        <nav className={isAuthPage ? "relative z-20 bg-[#0B0F19]/85 backdrop-blur-xl border-b border-slate-800/80 text-slate-100 px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center transition-all duration-300" : "bg-blue-600 text-white px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center"}>
             {/* Logo */}
-            <Link to='/'className="text-xl font-bold">
-                Expense Tracker
+            <Link to='/' className={isAuthPage ? "text-lg font-semibold tracking-wider text-white hover:text-emerald-400 transition-colors" : "text-xl font-bold"}>
+                EXPENSE TRACKER
             </Link>
 
             {/* Links */}
@@ -36,8 +38,16 @@ function Navbar()
                     </>
                 ) : (
                     <>
-                        {location.pathname !== '/login' && <Link to="/login" className="hover:underline">Login</Link>}
-                        {location.pathname !== '/register' && <Link to="/register" className="hover:underline">Register</Link>}
+                        {location.pathname !== '/login' && (
+                            <Link to="/login" className={isAuthPage ? "text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-emerald-400 transition-colors" : "hover:underline"}>
+                                Login
+                            </Link>
+                        )}
+                        {location.pathname !== '/register' && (
+                            <Link to="/register" className={isAuthPage ? "text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-emerald-400 transition-colors" : "hover:underline"}>
+                                Register
+                            </Link>
+                        )}
                     </>
                 )}
             </div>
