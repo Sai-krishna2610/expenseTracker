@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { decryptData } from "../utils/crypto.js";
 
 function Dashboard() {
-    const { encryptionSecret } = useAuth();
+    const { encryptionSecret, setEncryptionSecret, setPinError } = useAuth();
     const [expenses, setExpenses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -15,9 +15,16 @@ function Dashboard() {
             try {
                 const res = await API.get("/expenses");
                 
+                let decryptionFailedCount = 0;
+                let encryptedItemsCount = 0;
+
                 // Decrypt expenses in parallel
                 const decryptedList = await Promise.all(
                     res.data.map(async (item) => {
+                        if (!item.encryptedPayload) {
+                            return item; // Plain-text fallback for existing/unencrypted data
+                        }
+                        encryptedItemsCount++;
                         try {
                             const plainData = await decryptData(item.encryptedPayload, encryptionSecret);
                             return { 
@@ -27,10 +34,18 @@ function Dashboard() {
                             };
                         } catch (err) {
                             console.error("Decryption failed for item:", item._id, err);
+                            decryptionFailedCount++;
                             return null;
                         }
                     })
                 );
+
+                if (encryptedItemsCount > 0 && decryptionFailedCount === encryptedItemsCount) {
+                    // All encrypted items failed to decrypt -> Wrong PIN entered!
+                    setPinError("Incorrect Security PIN. Please try again.");
+                    setEncryptionSecret(null);
+                    return;
+                }
 
                 setExpenses(decryptedList.filter(Boolean));
             } catch (err) {
@@ -65,6 +80,15 @@ function Dashboard() {
         return isThisMonth ? acc + curr.amount : acc;
     }, 0);
 
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-slate-600 font-semibold">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+                <p>Loading & decrypting your expense data...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
@@ -80,9 +104,7 @@ function Dashboard() {
                             </h2>
                         </div>
                         <h3 className="font-bold text-lg mb-3">Recent Transactions</h3>
-                        {isLoading ? (
-                            <p>Loading & decrypting expenses...</p>
-                        ) : expenses.length === 0 ? (
+                        {expenses.length === 0 ? (
                             <p>No Expenses Found</p>
                         ) : (
                             <table className="w-full text-left border-collapse">
