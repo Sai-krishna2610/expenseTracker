@@ -17,7 +17,7 @@ function Register() {
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { loginWithPassword, loginWithGoogle } = useAuth();
 
     const handleChange = (e) => {
         setForm({
@@ -38,7 +38,7 @@ function Register() {
 
             // If your backend returns a JWT on register
             if (res.data.token) {
-                login(res.data.token);
+                loginWithPassword(res.data.token, form.password);
                 navigate("/dashboard");
             } else {
                 alert("Registered Successfully");
@@ -64,7 +64,7 @@ function Register() {
                 idToken: credentialResponse.credential,
             });
 
-            login(res.data.token);
+            loginWithGoogle(res.data.token);
             navigate("/dashboard");
         } catch (err) {
             setError(

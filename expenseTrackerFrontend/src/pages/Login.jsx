@@ -11,7 +11,7 @@ function Login()
     const [password,setPassword]=useState("");
     const [showPassword, setShowPassword] = useState(false);
     const navigate=useNavigate();
-    const {login}=useAuth();//Destructure login from useAuth();
+    const { loginWithPassword, loginWithGoogle } = useAuth(); // Destructure login functions from useAuth()
     const [isLoading,setIsLoading]=useState(false);
     const [error,setError]=useState(null);
 
@@ -24,7 +24,7 @@ function Login()
                 email,password
             });
             console.log("Login Success ")
-            login(res?.data.token);//calling login function and passing token as params
+            loginWithPassword(res?.data.token, password); // calling loginWithPassword function and passing token & password as params
 
             //redirect after login
             navigate('/dashboard');
@@ -48,7 +48,7 @@ function Login()
             const res = await API.post("/auth/google", {
                 idToken: credentialResponse.credential
             });
-            login(res?.data.token);
+            loginWithGoogle(res?.data.token);
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || "Google Login Failed");
