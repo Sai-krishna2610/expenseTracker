@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import API from "../services/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { decryptData } from "../utils/crypto.js";
 
 function Transactions() {
+    const { encryptionSecret } = useAuth();
     const [expenses, setExpenses] = useState([]);
     const [filteredExpenses, setFilteredExpenses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -16,8 +19,27 @@ function Transactions() {
         setError("");
         try {
             const res = await API.get("/expenses");
-            setExpenses(res.data);
-            setFilteredExpenses(res.data);
+            
+            // Decrypt each transaction payload
+            const decryptedList = await Promise.all(
+                res.data.map(async (item) => {
+                    try {
+                        const plainData = await decryptData(item.encryptedPayload, encryptionSecret);
+                        return {
+                            _id: item._id,
+                            ...plainData,
+                            date: item.date || plainData.date
+                        };
+                    } catch (err) {
+                        console.error("Decryption failed for item:", item._id, err);
+                        return null;
+                    }
+                })
+            );
+
+            const validList = decryptedList.filter(Boolean);
+            setExpenses(validList);
+            setFilteredExpenses(validList);
         } catch (err) {
             console.error("Failed to fetch expenses", err);
             setError(err.response?.data?.message || "Failed to load transactions.");
@@ -27,8 +49,10 @@ function Transactions() {
     };
 
     useEffect(() => {
-        fetchExpenses();
-    }, []);
+        if (encryptionSecret) {
+            fetchExpenses();
+        }
+    }, [encryptionSecret]);
 
     // Filter and sort logic
     useEffect(() => {

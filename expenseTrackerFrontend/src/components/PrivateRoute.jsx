@@ -1,17 +1,23 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-function PrivateRoute({children})
-{
-    const {token} =useAuth();//Destructuring the useAuth
-    // const token=null;
-    if(!token)
-    {
-        //not logged in -> go to login page
-        console.log("Token not there");
-        return <Navigate to='/login'/>
+import PinModal from "./PinModal.jsx";
+
+function PrivateRoute({ children }) {
+    const { token, authMethod, encryptionSecret } = useAuth();
+
+    if (!token) {
+        console.log("Token not present, redirecting to login.");
+        return <Navigate to="/login" replace />;
     }
-    console.log('Token present');
-    //logged in -> show page
+
+    if (authMethod === "google" && !encryptionSecret) {
+        console.log("Google user authenticated but PIN is missing, showing PinModal.");
+        return <PinModal />;
+    }
+
+    console.log("Token present and encryption secret available.");
     return children;
 }
+
 export default PrivateRoute;
